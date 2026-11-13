@@ -471,11 +471,11 @@ export function buildInvoiceDescriptor(): DocumentTypeDescriptor {
     // See types.ts's own comment on `DocumentTypeDescriptor.email`, and quote.descriptor.ts for the
     // same call on the sibling type — sober, plain-English default, overridable per company.
     email: {
-      subject: '{typeLabel} {displayNumber} from {companyName}',
+      subject: 'Invoice {displayNumber} from {companyName}',
       body:
         'Dear {recipientName},\n\n' +
-        'Please find attached {typeLabel} {displayNumber} from {companyName}, for a total of ' +
-        '{totalGross}.\n\n' +
+        'Thank you for your order. Please find attached invoice {displayNumber} from {companyName}, ' +
+        'for a total of {totalGross}.\n\n' +
         'Best regards,\n{companyName}',
     },
     // Per-recipient document language — see types.ts's own comment on `emailTranslations`, and
@@ -564,6 +564,18 @@ export function buildInvoiceDescriptor(): DocumentTypeDescriptor {
         label: 'Currency',
         required: true,
         options: CURRENCY_OPTIONS,
+      },
+      {
+        key: 'invoiceFormat',
+        kind: 'select',
+        label: 'Invoice template',
+        required: true,
+        options: [
+          { value: 'b2b', label: 'B2B Tax Invoice' },
+          { value: 'b2c', label: 'B2C Retail Invoice' },
+        ],
+        helpText:
+          'B2B Tax Invoice for GST-registered buyers; B2C Retail Invoice for retail / unregistered customers.',
       },
       {
         key: 'notes',
