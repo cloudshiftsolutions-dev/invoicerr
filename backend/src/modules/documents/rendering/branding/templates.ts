@@ -9,11 +9,12 @@ import { join } from 'node:path';
 
 import { logger } from '@/logger/logger.service';
 
-export type DocumentTemplateKey = 'classic' | 'atelier';
+export type DocumentTemplateKey = 'classic' | 'atelier' | 'sindhu';
 
 export const DOCUMENT_TEMPLATES: readonly { key: DocumentTemplateKey; label: string }[] = [
   { key: 'classic', label: 'Classic' },
   { key: 'atelier', label: 'Atelier' },
+  { key: 'sindhu', label: "Sindhu's Pickles" },
 ];
 
 /** The product default. Migration 20261029070000 moved every pre-existing company to it; new companies start on it too. A null template only remains on an image older than 2026-10-29. */
@@ -79,8 +80,51 @@ export function templateStyleBlock(
   accentColor: string,
   companyFontStack: string | null,
 ): string {
-  if (template !== 'atelier') return '';
   const body = companyFontStack ?? UI_STACK;
+
+  // Sindhu's Pickles — green / gold / cream presentation layer over the same classic markup.
+  if (template === 'sindhu') {
+    const green = '#063f32';
+    const gold = '#c89b3c';
+    const cream = '#f7f4ea';
+    const tint = `color-mix(in srgb, ${accentColor || green} 12%, ${cream})`;
+    return `
+  <style data-template-style="sindhu">${templateFontFaceCss()}
+    body { font-family: ${body}; color: ${green}; font-size: 12.5px; background: ${cream}; }
+    .header { flex-direction: column; border-bottom: 2px solid ${gold}; padding-bottom: 16px; margin-bottom: 24px; gap: 18px; }
+    .document-heading { margin-left: 0; text-align: left; }
+    .document-title { font-family: ${TITLE_STACK}; font-weight: 400; font-size: 40px; line-height: 1; letter-spacing: -0.02em; color: ${green}; }
+    .document-number { margin-top: 8px; font-size: 13px; color: ${gold}; }
+    .document-meta { color: ${green}; }
+    .parties { gap: 40px; margin-bottom: 22px; }
+    .company-name { font-size: 14px; font-weight: 600; color: ${green}; }
+    .company-address, .party-identifiers { color: ${green}; opacity: 0.85; }
+    .field-label, .totals-label, .custom-fields-heading { text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 11px; color: ${gold}; }
+    .meta-grid { background: ${tint}; border: 1px solid ${gold}; border-radius: 10px; padding: 14px 18px; gap: 10px 20px; margin-bottom: 24px; }
+    .meta-grid .field-value { font-weight: 600; color: ${green}; }
+    thead tr { background: ${green}; border-bottom: none; }
+    th { font-weight: 500; color: ${cream}; font-size: 11px; padding: 8px; }
+    tbody tr { border-bottom: 1px solid color-mix(in srgb, ${gold} 45%, ${cream}); }
+    td { padding: 10px 8px; color: ${green}; }
+    td { font-variant-numeric: tabular-nums; }
+    .totals-amount { font-family: ${TITLE_STACK}; font-variant-numeric: tabular-nums lining-nums; font-size: 14px; color: ${green}; }
+    .totals-section { background: ${tint}; border: 1px solid ${gold}; border-radius: 10px; padding: 14px 18px; }
+    .totals-row { border-bottom: none; padding: 5px 0; }
+    .totals-row.summary { border-top: 1px solid ${gold}; border-bottom: none; margin-top: 6px; padding-top: 12px; align-items: baseline; }
+    .totals-row.summary .totals-amount { font-size: 26px; font-weight: 500; color: ${green}; }
+    .payment-section { box-sizing: border-box; width: 100%; align-items: center; gap: 22px; border: 1px solid ${gold}; border-radius: 10px; padding: 16px 20px; background: ${cream}; }
+    .payment-qr-section, .payment-methods-section { background: none; border: none; border-radius: 0; padding: 0; }
+    .payment-qr-section { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .payment-qr-image { width: 96px; height: 96px; }
+    .payment-methods-heading { font-size: 12px; font-weight: 600; color: ${green}; }
+    .legal-mentions, .custom-fields-section { border-top: 1px solid ${gold}; }
+    .legal-mention-item { color: ${green}; opacity: 0.85; }
+    .option-group-heading { font-family: ${TITLE_STACK}; font-weight: 500; font-size: 16px; color: ${green}; }
+    .option-group-heading .accepted-badge { text-transform: none; letter-spacing: 0; }
+  </style>`;
+  }
+
+  if (template !== 'atelier') return '';
   const tint = `color-mix(in srgb, ${accentColor} 9%, white)`;
   return `
   <style data-template-style="atelier">${templateFontFaceCss()}

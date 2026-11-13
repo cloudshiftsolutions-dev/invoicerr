@@ -705,13 +705,22 @@ export function renderDocumentHtml(input: RenderDocumentHtmlInput): string {
   const recipientLabel = recipient
     ? (descriptor.fields.find((field) => field.key === recipient.fieldKey)?.label ?? '')
     : '';
+  // GST B2B/B2C title override — `invoiceFormat` on the invoice descriptor; other types keep
+  // `descriptor.label` unchanged.
+  const invoiceFormat = instance.data?.invoiceFormat;
+  const documentTitle =
+    invoiceFormat === 'b2b'
+      ? 'Tax Invoice'
+      : invoiceFormat === 'b2c'
+        ? 'Retail Invoice'
+        : descriptor.label;
 
   let html = `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>${escapeHtmlSafe(descriptor.label)}</title>
+  <title>${escapeHtmlSafe(documentTitle)}</title>
   <style>
     * {
       margin: 0;
@@ -1044,7 +1053,7 @@ export function renderDocumentHtml(input: RenderDocumentHtmlInput): string {
     <div class="header">
       <div class="header-brand">${logoBlockHtml}</div>
       <div class="document-heading">
-        <div class="document-title">${escapeHtmlSafe(descriptor.label)}</div>
+        <div class="document-title">${escapeHtmlSafe(documentTitle)}</div>
         ${
           descriptor.numbering
             ? `<div class="document-number">${escapeHtmlSafe(

@@ -71,4 +71,32 @@ describe('renderDocumentHtml, document template', () => {
     const override = atelier.slice(atelier.indexOf('data-template-style="atelier"'));
     expect(override).not.toMatch(/body\s*\{[^}]*InvoicerrTemplateFigtree/);
   });
+
+  it('embeds the sindhu stylesheet when the sindhu template is asked', () => {
+    const sindhu = renderDocumentHtml({ ...base, branding: { template: 'sindhu' } });
+    expect(sindhu).toContain('data-template-style="sindhu"');
+    expect(sindhu).toContain('#063f32');
+    expect(sindhu).toContain('#c89b3c');
+    expect(sindhu).toContain('#f7f4ea');
+  });
+
+  it('prints Tax Invoice / Retail Invoice titles from invoiceFormat', () => {
+    const tax = renderDocumentHtml({
+      ...base,
+      instance: { ...base.instance, data: { ...base.instance.data, invoiceFormat: 'b2b' } },
+    });
+    expect(tax).toContain('<title>Tax Invoice</title>');
+    expect(tax).toContain('<div class="document-title">Tax Invoice</div>');
+
+    const retail = renderDocumentHtml({
+      ...base,
+      instance: { ...base.instance, data: { ...base.instance.data, invoiceFormat: 'b2c' } },
+    });
+    expect(retail).toContain('<title>Retail Invoice</title>');
+    expect(retail).toContain('<div class="document-title">Retail Invoice</div>');
+
+    const plain = renderDocumentHtml(base);
+    expect(plain).toContain('<title>Invoice</title>');
+    expect(plain).toContain('<div class="document-title">Invoice</div>');
+  });
 });

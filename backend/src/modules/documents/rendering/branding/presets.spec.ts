@@ -2,8 +2,8 @@ import { isBrandingFontKey } from './font-catalog';
 import { BRANDING_PRESETS, brandingPresetById } from './presets';
 
 describe('branding presets', () => {
-  it('has 4 presets (Classic, Modern, Minimal, Bold), each with a unique id', () => {
-    expect(BRANDING_PRESETS).toHaveLength(4);
+  it('has 5 presets (Classic, Modern, Minimal, Bold, Sindhu), each with a unique id', () => {
+    expect(BRANDING_PRESETS).toHaveLength(5);
     const ids = BRANDING_PRESETS.map((p) => p.id);
     expect(new Set(ids).size).toBe(ids.length);
   });

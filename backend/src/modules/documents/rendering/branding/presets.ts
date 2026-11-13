@@ -23,6 +23,7 @@ export const BRANDING_PRESETS: readonly BrandingPreset[] = [
   { id: 'modern', label: 'Modern', accentColor: '#0f766e', font: 'dmSans' },
   { id: 'minimal', label: 'Minimal', accentColor: '#111827', font: 'ibmPlexSans' },
   { id: 'bold', label: 'Bold', accentColor: '#b91c1c', font: 'lora' },
+  { id: 'sindhu', label: "Sindhu's Pickles", accentColor: '#063f32', font: 'lora' },
 ];
 
 export function brandingPresetById(id: string | null | undefined): BrandingPreset | undefined {
